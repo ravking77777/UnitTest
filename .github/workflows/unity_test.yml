@@ -13,10 +13,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Unity
-        uses: unity-actions/setup-unity@v1
-        with:
-          unity-version: 2022.3.7f1  # 사용할 Unity 버전
+      - name: Download Unity installer
+        run: |
+          wget -nv https://download.unity3d.com/download_unity/2020.3.15f2/Linux/UnitySetup-2020.3.15f2 && chmod +x UnitySetup-2020.3.15f2
+
+      - name: Install Unity
+        run: |
+          ./UnitySetup-2022.3.7f1 --unattended --install-location=/opt/Unity --components=Unity,Windows-Mono
+
+      - name: Activate Unity license
+        run: |
+          /opt/Unity/Editor/Unity -quit -batchmode -nographics -serial ${{ secrets.UNITY_SERIAL }} -username ${{ secrets.UNITY_USERNAME }} -password ${{ secrets.UNITY_PASSWORD }}
 
       - name: Install NUnit
         run: |
