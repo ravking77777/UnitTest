@@ -15,7 +15,7 @@ jobs:
 
       - name: Download Unity installer
         run: |
-          wget -nv https://download.unity3d.com/download_unity/2020.3.15f2/Linux/UnitySetup-2020.3.15f2 && chmod +x UnitySetup-2020.3.15f2
+          wget -nv https://download.unity3d.com/download_unity/2022.3.7f1/Linux/UnitySetup-2022.3.7f1 && chmod +x UnitySetup-2022.3.7f1
 
       - name: Install Unity
         run: |
