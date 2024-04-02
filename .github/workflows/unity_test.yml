@@ -1,0 +1,29 @@
+name: Unity Test
+
+on:
+  push:
+    branches:
+      - main  # 테스트할 브랜치 지정
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Unity
+        uses: game-ci/setup-unity@v1
+        with:
+          unity-version: 2022.3.7f1  # 사용할 Unity 버전
+
+      - name: Install NUnit
+        run: |
+          dotnet new tool-manifest
+          dotnet tool install nunit.console --tool-path ./.nuget
+          export PATH="$PATH:$(pwd)/.nuget"
+
+      - name: Run Unit Tests
+        run: |
+          nunit3-console UnitTest\Library\ScriptAssemblies\Tests.dll  # 유닛 테스트 실행할 DLL 경로 지정
