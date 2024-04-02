@@ -26,4 +26,4 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          nunit3-console UnitTest\Library\ScriptAssemblies\Tests.dll  # 유닛 테스트 실행할 DLL 경로 지정
+          nunit3-console Library\ScriptAssemblies\Tests.dll  # 유닛 테스트 실행할 DLL 경로 지정
