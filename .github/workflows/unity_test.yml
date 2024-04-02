@@ -1,57 +1,67 @@
-name: Actions 😎
+name: Run Unity Testrunner 
 
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
 on:
-  pull_request: {}
-  push: { branches: [master] }
+  push:
+    branches: [ master ]
+#  pull_request:
+#    branches: [ master ]
 
 env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  UNITY_LICENSE: $
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  testAllModes:
-    name: Test in ${{ matrix.testMode }} on version ${{ matrix.unityVersion }}
+  runUnityTestrunner:
+    
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    
     strategy:
       fail-fast: false
       matrix:
+        # Unity project가 Root가 아니면 경로 입력
         projectPath:
-          - UnityProject
+          - ./
+        # 사용중인 Unity version
         unityVersion:
           - 2022.3.7f1
         testMode:
           - playmode
           - editmode
-
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checkout
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          lfs: true
+       
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      with:
+        lfs: true
 
-
-      # Cache
-      - uses: actions/cache@v1.1.0
+          
+      # Caching library folder    
+      - name: Cache Library Folder
+        uses: actions/cache@v1.1.0
         with:
-          path: ${{ matrix.projectPath }}/Library
-          key: Library-${{ matrix.projectPath }}
+          path: $/Library
+          key: Library-$
           restore-keys: |
             Library-
-
-
-      # Test
-      - name: Run tests
-        id: tests
+            
+      # Run Unity Testrunner
+      - name : Run Unity Testrunner
         uses: webbertakken/unity-test-runner@v1.4
+        id: tests
         with:
-          projectPath: ${{ matrix.projectPath }}
-          unityVersion: ${{ matrix.unityVersion }}
-          testMode: ${{ matrix.testMode }}
-          artifactsPath: ${{ matrix.testMode }}-artifacts
+          projectPath: $
+          unityVersion: $
+          testMode: $
+          artifactsPath: $-artifacts
       
-      
-      # Upload Test
-      - uses: actions/upload-artifact@v1
+      # Upload result
+      - name: Upload result  
+        uses: actions/upload-artifact@v1
         with:
-          name: Test results for ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.artifactsPath }}
+          name: Test results for $
+          path: $ 
