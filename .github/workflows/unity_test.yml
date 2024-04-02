@@ -1,65 +1,29 @@
-name: Run Unity Testrunner 
+name: Unity Test
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
-    branches: [ master ]
-#  pull_request:
-#    branches: [ master ]
+    branches:
+      - main  # 테스트할 브랜치 지정
 
-env:
-  UNITY_LICENSE: $
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  runUnityTestrunner:
-    
-    # The type of runner that the job will run on
+  build:
     runs-on: ubuntu-latest
-    
-    strategy:
-      fail-fast: false
-      matrix:
-        # Unity project가 Root가 아니면 경로 입력
-        projectPath:
-          - ./
-        # 사용중인 Unity version
-        unityVersion:
-          - 2022.3.7f1
-        testMode:
-          - playmode
-          - editmode
-    
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-       
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
 
-          
-      # Caching library folder    
-      - name: Cache Library Folder
-        uses: actions/cache@v1.1.0
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Unity
+        uses: game-ci/setup-unity@v1
         with:
-          path: $/Library
-          key: Library-$
-          restore-keys: |
-            Library-
-            
-      # Run Unity Testrunner
-      - name : Run Unity Testrunner
-        uses: webbertakken/unity-test-runner@v1.4
-        id: tests
-        with:
-          projectPath: $
-          unityVersion: $
-          testMode: $
-          artifactsPath: $-artifacts
-      
-      # Upload result
-      - name: Upload result  
-        uses: actions/upload-artifact@v1
-        with:
-          name: Test results for $
-          path: $ 
+          unity-version: 2022.3.7f1  # 사용할 Unity 버전
+
+      - name: Install NUnit
+        run: |
+          dotnet new tool-manifest
+          dotnet tool install nunit.console --tool-path ./.nuget
+          export PATH="$PATH:$(pwd)/.nuget"
+
+      - name: Run Unit Tests
+        run: |
+          nunit3-console UnitTest/Library/ScriptAssemblies/Tests.dll  # 유닛 테스트 실행할 DLL 경로 지정
